@@ -37,6 +37,7 @@ const pool = new Pool({
     max: parseInt(process.env.DB_POOL_MAX_SIZE),
     idleTimeoutMillis: parseInt(process.env.DB_IDLE_TIMEOUT_MILLIS),
     connectionTimeoutMillis: parseInt(process.env.DB_CONNECTION_TIMEOUT_MILLIS),
+    ssl: process.env.DB_SSL === "true" ? { rejectUnauthorized: false } : false,
 });
 
 pool.on("error", (err, client) => {

@@ -87,4 +87,9 @@ app.put("/:id/:name", authenticate, validate(bookSeatSchema, "params"), async (r
     }
 });
 
-app.listen(port, () => console.log("Server starting on port: " + port));
+// only listen locally, on vercel the app is handled as a serverless function
+if (process.env.NODE_ENV !== "production") {
+    app.listen(port, () => console.log("Server starting on port: " + port));
+}
+
+export default app;
