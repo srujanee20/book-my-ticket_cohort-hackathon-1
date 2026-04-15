@@ -12,14 +12,101 @@
         background-color: #0f172a;
         color: #f8fafc;
       }
+      /* Auth modal backdrop */
+      .auth-backdrop {
+        background: rgba(15, 23, 42, 0.85);
+        backdrop-filter: blur(12px);
+      }
+      /* Smooth input focus ring */
+      .auth-input:focus {
+        box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.3);
+      }
+      /* Subtle pulse on the login prompt */
+      @keyframes gentle-pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; }
+      }
+      .pulse-hint { animation: gentle-pulse 2s ease-in-out infinite; }
     </style>
   </head>
   <body
     class="min-h-screen flex items-center justify-center p-6 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900"
   >
+    <!-- Auth Modal Overlay -->
+    <div id="authModal" class="fixed inset-0 z-50 flex items-center justify-center auth-backdrop hidden">
+      <div class="bg-slate-800/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-slate-700/50 w-full max-w-md p-8 mx-4">
+        <!-- Tabs -->
+        <div class="flex bg-slate-900/60 rounded-xl p-1 mb-8">
+          <button id="loginTab" onclick="switchTab('login')"
+            class="flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all duration-300 bg-emerald-500 text-white">
+            Login
+          </button>
+          <button id="registerTab" onclick="switchTab('register')"
+            class="flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all duration-300 text-slate-400 hover:text-slate-200">
+            Register
+          </button>
+        </div>
+
+        <!-- Login Form -->
+        <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-5">
+          <div>
+            <label class="block text-sm font-medium text-slate-300 mb-1.5">Email</label>
+            <input type="email" id="loginEmail" required placeholder="you@example.com"
+              class="auth-input w-full px-4 py-3 bg-slate-900/60 border border-slate-600/50 rounded-xl text-white placeholder-slate-500 outline-none transition-all duration-200 focus:border-emerald-400" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-300 mb-1.5">Password</label>
+            <input type="password" id="loginPassword" required placeholder="••••••••"
+              class="auth-input w-full px-4 py-3 bg-slate-900/60 border border-slate-600/50 rounded-xl text-white placeholder-slate-500 outline-none transition-all duration-200 focus:border-emerald-400" />
+          </div>
+          <p id="loginError" class="text-rose-400 text-sm hidden"></p>
+          <button type="submit" id="loginBtn"
+            class="w-full py-3 bg-gradient-to-r from-emerald-500 to-cyan-500 text-white font-bold rounded-xl hover:from-emerald-400 hover:to-cyan-400 transition-all duration-300 shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/40 active:scale-[0.98]">
+            Sign In
+          </button>
+        </form>
+
+        <!-- Register Form -->
+        <form id="registerForm" onsubmit="handleRegister(event)" class="space-y-5 hidden">
+          <div>
+            <label class="block text-sm font-medium text-slate-300 mb-1.5">Name</label>
+            <input type="text" id="regName" required placeholder="John Doe" minlength="2"
+              class="auth-input w-full px-4 py-3 bg-slate-900/60 border border-slate-600/50 rounded-xl text-white placeholder-slate-500 outline-none transition-all duration-200 focus:border-emerald-400" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-300 mb-1.5">Email</label>
+            <input type="email" id="regEmail" required placeholder="you@example.com"
+              class="auth-input w-full px-4 py-3 bg-slate-900/60 border border-slate-600/50 rounded-xl text-white placeholder-slate-500 outline-none transition-all duration-200 focus:border-emerald-400" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-300 mb-1.5">Password</label>
+            <input type="password" id="regPassword" required placeholder="Min 6 characters" minlength="6"
+              class="auth-input w-full px-4 py-3 bg-slate-900/60 border border-slate-600/50 rounded-xl text-white placeholder-slate-500 outline-none transition-all duration-200 focus:border-emerald-400" />
+          </div>
+          <p id="regError" class="text-rose-400 text-sm hidden"></p>
+          <button type="submit" id="regBtn"
+            class="w-full py-3 bg-gradient-to-r from-emerald-500 to-cyan-500 text-white font-bold rounded-xl hover:from-emerald-400 hover:to-cyan-400 transition-all duration-300 shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/40 active:scale-[0.98]">
+            Create Account
+          </button>
+        </form>
+      </div>
+    </div>
+
     <div
       class="max-w-7xl w-full bg-slate-800/80 backdrop-blur-xl rounded-3xl shadow-2xl p-10 border border-slate-700/50"
     >
+      <!-- User status bar -->
+      <div id="userBar" class="flex items-center justify-end gap-4 mb-6 hidden">
+        <div class="flex items-center gap-2 px-4 py-2 bg-slate-900/50 rounded-full border border-slate-700/50">
+          <div class="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]"></div>
+          <span class="text-slate-300 text-sm font-medium">Logged in as <span id="userName" class="text-emerald-400 font-bold"></span></span>
+        </div>
+        <button onclick="handleLogout()"
+          class="px-4 py-2 text-sm font-medium text-slate-400 hover:text-rose-400 bg-slate-900/50 rounded-full border border-slate-700/50 hover:border-rose-500/30 transition-all duration-200">
+          Logout
+        </button>
+      </div>
+
       <div class="text-center mb-10">
         <h1
           class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400 mb-4 tracking-tight"
@@ -68,6 +155,233 @@
     </div>
 
     <script>
+      // ─── Auth State Management ────────────────────────────────
+      function getToken() {
+        return localStorage.getItem("token");
+      }
+      function getRefreshToken() {
+        return localStorage.getItem("refreshToken");
+      }
+      function getUser() {
+        const u = localStorage.getItem("user");
+        return u ? JSON.parse(u) : null;
+      }
+      function saveAuth(data) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("refreshToken", data.refreshToken);
+        localStorage.setItem("user", JSON.stringify(data.user));
+      }
+      function clearAuth() {
+        localStorage.removeItem("token");
+        localStorage.removeItem("refreshToken");
+        localStorage.removeItem("user");
+      }
+
+      // ─── Authenticated Fetch (auto-refreshes on 401) ─────────
+      async function authFetch(url, options = {}) {
+        const token = getToken();
+        if (!token) {
+          showAuthModal();
+          throw new Error("Not authenticated");
+        }
+
+        options.headers = {
+          ...options.headers,
+          Authorization: `Bearer ${token}`,
+        };
+
+        let res = await fetch(url, options);
+
+        // If 401, try to refresh the token once
+        if (res.status === 401) {
+          const refreshed = await tryRefreshToken();
+          if (refreshed) {
+            options.headers.Authorization = `Bearer ${getToken()}`;
+            res = await fetch(url, options);
+          } else {
+            clearAuth();
+            updateUI();
+            showAuthModal();
+            throw new Error("Session expired — please log in again");
+          }
+        }
+
+        return res;
+      }
+
+      async function tryRefreshToken() {
+        const refreshToken = getRefreshToken();
+        if (!refreshToken) return false;
+
+        try {
+          const res = await fetch("/refresh", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ refreshToken }),
+          });
+
+          if (!res.ok) return false;
+
+          const data = await res.json();
+          localStorage.setItem("token", data.token);
+          return true;
+        } catch {
+          return false;
+        }
+      }
+
+      // ─── Auth Modal ───────────────────────────────────────────
+      function showAuthModal() {
+        document.getElementById("authModal").classList.remove("hidden");
+      }
+      function hideAuthModal() {
+        document.getElementById("authModal").classList.add("hidden");
+      }
+
+      function switchTab(tab) {
+        const loginTab = document.getElementById("loginTab");
+        const registerTab = document.getElementById("registerTab");
+        const loginForm = document.getElementById("loginForm");
+        const registerForm = document.getElementById("registerForm");
+
+        // clear errors
+        document.getElementById("loginError").classList.add("hidden");
+        document.getElementById("regError").classList.add("hidden");
+
+        if (tab === "login") {
+          loginTab.className = "flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all duration-300 bg-emerald-500 text-white";
+          registerTab.className = "flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all duration-300 text-slate-400 hover:text-slate-200";
+          loginForm.classList.remove("hidden");
+          registerForm.classList.add("hidden");
+        } else {
+          registerTab.className = "flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all duration-300 bg-emerald-500 text-white";
+          loginTab.className = "flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all duration-300 text-slate-400 hover:text-slate-200";
+          registerForm.classList.remove("hidden");
+          loginForm.classList.add("hidden");
+        }
+      }
+
+      async function handleLogin(e) {
+        e.preventDefault();
+        const errorEl = document.getElementById("loginError");
+        const btn = document.getElementById("loginBtn");
+        errorEl.classList.add("hidden");
+        btn.textContent = "Signing in...";
+        btn.disabled = true;
+
+        try {
+          const res = await fetch("/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              email: document.getElementById("loginEmail").value,
+              password: document.getElementById("loginPassword").value,
+            }),
+          });
+
+          const data = await res.json();
+
+          if (!res.ok) {
+            errorEl.textContent = data.error || "Login failed";
+            errorEl.classList.remove("hidden");
+            return;
+          }
+
+          saveAuth(data);
+          hideAuthModal();
+          updateUI();
+        } catch (ex) {
+          errorEl.textContent = "Network error — try again";
+          errorEl.classList.remove("hidden");
+        } finally {
+          btn.textContent = "Sign In";
+          btn.disabled = false;
+        }
+      }
+
+      async function handleRegister(e) {
+        e.preventDefault();
+        const errorEl = document.getElementById("regError");
+        const btn = document.getElementById("regBtn");
+        errorEl.classList.add("hidden");
+        btn.textContent = "Creating account...";
+        btn.disabled = true;
+
+        try {
+          const res = await fetch("/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              name: document.getElementById("regName").value,
+              email: document.getElementById("regEmail").value,
+              password: document.getElementById("regPassword").value,
+            }),
+          });
+
+          const data = await res.json();
+
+          if (!res.ok) {
+            errorEl.textContent = data.error || "Registration failed";
+            errorEl.classList.remove("hidden");
+            return;
+          }
+
+          // Auto-login after successful registration
+          const loginRes = await fetch("/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              email: document.getElementById("regEmail").value,
+              password: document.getElementById("regPassword").value,
+            }),
+          });
+
+          const loginData = await loginRes.json();
+          if (loginRes.ok) {
+            saveAuth(loginData);
+            hideAuthModal();
+            updateUI();
+          } else {
+            // Registration succeeded but auto-login failed — just switch to login tab
+            switchTab("login");
+          }
+        } catch (ex) {
+          errorEl.textContent = "Network error — try again";
+          errorEl.classList.remove("hidden");
+        } finally {
+          btn.textContent = "Create Account";
+          btn.disabled = false;
+        }
+      }
+
+      async function handleLogout() {
+        try {
+          const refreshToken = getRefreshToken();
+          await authFetch("/logout", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ refreshToken }),
+          });
+        } catch {
+          // best-effort logout
+        }
+        clearAuth();
+        updateUI();
+      }
+
+      // ─── UI State ─────────────────────────────────────────────
+      function updateUI() {
+        const user = getUser();
+        const userBar = document.getElementById("userBar");
+        if (user) {
+          userBar.classList.remove("hidden");
+          document.getElementById("userName").textContent = user.name;
+        } else {
+          userBar.classList.add("hidden");
+        }
+      }
+
+      // ─── Seat Grid ────────────────────────────────────────────
       async function run() {
         const tbl = document.getElementById("tbl");
         const res = await fetch("/seats");
@@ -104,12 +418,18 @@
               return; // Seat is already taken
             }
 
+            // Must be logged in to book
+            if (!getToken()) {
+              showAuthModal();
+              return;
+            }
+
             try {
-              const id = j[i].id; // Safe from loop closure
+              const id = j[i].id;
               const name = prompt("Enter your name");
               if (!name) return;
 
-              const res = await fetch(`/${id}/${name}`, { method: "PUT" });
+              const res = await authFetch(`/${id}/${name}`, { method: "PUT" });
               const data = await res.json();
 
               if (data.error) {
@@ -128,13 +448,24 @@
                         `;
               }
             } catch (ex) {
-              alert("error booking " + ex);
+              if (ex.message !== "Not authenticated") {
+                alert("Error booking: " + ex.message);
+              }
             }
           });
           tr.appendChild(td);
           tbl.appendChild(tr);
         }
       }
+
+      // ─── Init ──────────────────────────────────────────────────
+      updateUI();
+
+      // If not logged in, show the auth modal on load
+      if (!getToken()) {
+        showAuthModal();
+      }
+
       run();
     </script>
   </body>

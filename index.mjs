@@ -15,6 +15,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const port = process.env.PORT || 8080;
 
 const app = new express();
+
 app.use(cors());
 app.use(express.json());
 
@@ -89,7 +90,7 @@ app.put("/:id/:name", authenticate, validate(bookSeatSchema, "params"), async (r
 
 // only listen locally, on vercel the app is handled as a serverless function
 if (process.env.NODE_ENV !== "production") {
-    app.listen(port, () => console.log("Server starting on port: " + port));
+    app.listen(port, () => console.log(`Server starting on port: ${port}`));
 }
 
 export default app;

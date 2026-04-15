@@ -23,11 +23,11 @@ export const bookSeat = async (seatId, name, userId) => {
             throw error;
         }
 
-        const sqlU = "UPDATE seats SET isbooked = 1, name = $2, user_id = $3 WHERE id = $1";
+        const sqlU = "UPDATE seats SET isbooked = 1, name = $2, user_id = $3 WHERE id = $1 RETURNING *";
         const updateResult = await conn.query(sqlU, [seatId, name, userId]);
 
         await conn.query("COMMIT");
-        return updateResult;
+        return { message: "Seat booked successfully", seat: updateResult.rows[0] };
     } catch (ex) {
         await conn.query("ROLLBACK");
         throw ex;

@@ -69,6 +69,7 @@ npm install
 Create a `.env` file in the project root:
 
 ```env
+NODE_ENV=example
 DB_HOST=localhost
 DB_PORT=5432
 DB_USER=postgres
