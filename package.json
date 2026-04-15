@@ -2,10 +2,10 @@
   "name": "book-my-ticket_cohort-hackathon-1",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "index.mjs",
   "scripts": {
     "dev": "nodemon index",
-    "start": "node inde"
+    "start": "node index"
   },
   "repository": {
     "type": "git",
@@ -18,5 +18,17 @@
   "bugs": {
     "url": "https://github.com/srujanee20/book-my-ticket_cohort-hackathon-1/issues"
   },
-  "homepage": "https://github.com/srujanee20/book-my-ticket_cohort-hackathon-1#readme"
+  "homepage": "https://github.com/srujanee20/book-my-ticket_cohort-hackathon-1#readme",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "joi": "^18.1.2",
+    "jsonwebtoken": "^9.0.3",
+    "pg": "^8.20.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
 }
