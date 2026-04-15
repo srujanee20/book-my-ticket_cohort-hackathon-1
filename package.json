@@ -1,0 +1,22 @@
+{
+  "name": "book-my-ticket_cohort-hackathon-1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index",
+    "start": "node inde"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://srujanee20@github.com/srujanee20/book-my-ticket_cohort-hackathon-1.git"
+  },
+  "keywords": [],
+  "author": "Srujanee Nayak <snayak52006@gmail.com>",
+  "license": "MIT",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/srujanee20/book-my-ticket_cohort-hackathon-1/issues"
+  },
+  "homepage": "https://github.com/srujanee20/book-my-ticket_cohort-hackathon-1#readme"
+}
